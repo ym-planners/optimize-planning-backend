@@ -17,11 +17,13 @@ This document outlines the steps to set up, deploy, and manage the data for the 
 
 *   `config/`: Contains Firebase configuration files like `firestore.rules` and `firestore.indexes.json`.
 *   `data/`: For storing data files (e.g., `turning-data.xlsx`, `turning-data.csv`).
+*   `docs/`: Project documentation (PRD, design documents).
 *   `public/`: Contains the static frontend files (e.g., `index.html`).
 *   `src/`: Source code.
     *   `functions/`: Firebase Cloud Functions source code (Python).
         *   `venv/`: Python virtual environment for function dependencies.
     *   `scripts/`: Scripts for tasks like data ingestion.
+*   `tools/`: Utility scripts (if any).
 *   `firebase.json`: Main Firebase project configuration file (at the project root).
 *   `.AI-Agentrules`: Contains project-specific learnings and patterns for the AI Agent.
 *   `memory-bank/`: Contains contextual documentation for the AI Agent.
@@ -42,6 +44,8 @@ This document outlines the steps to set up, deploy, and manage the data for the 
     *   Install dependencies: `pip install -r requirements.txt`
     *   Deactivate (optional): `deactivate`
     *   Return to the project root: `cd ../..`
+    *   OR run this whole command in the functions directory : 
+        `python3 -m venv venv && . venv/bin/activate && python3 -m pip install -r requirements.txt && firebase deploy --only functions`
 
 3.  **Configure Cloud Function for Unauthenticated Invocation (for MVP):**
     *   The `optimizeProduction` Cloud Function was configured to allow unauthenticated invocations for ease of testing in the MVP. For production, you should secure this endpoint.
