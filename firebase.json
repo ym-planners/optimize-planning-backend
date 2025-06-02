@@ -15,8 +15,8 @@
         "*.local"
       ],
       "runtime": "python311",
-      "memory": "16GB",
-      "cpu": 8
+      "memory": "8GB",
+      "cpu": 2
     }
   ],
   "hosting": {

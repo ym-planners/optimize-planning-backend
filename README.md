@@ -11,7 +11,7 @@ This document outlines the steps to set up, deploy, and manage the data for the 
 1.  **Firebase CLI:** Ensure you have the Firebase CLI installed and configured. (https://firebase.google.com/docs/cli#setup_the_cli)
 2.  **Python 3.11:** The Cloud Functions and ingestion script are written in Python 3.11.
 3.  **Google Cloud SDK (`gcloud`):** Required if you need to manage Cloud Run service permissions (e.g., for unauthenticated invocation).
-4.  **Service Account Key:** For data ingestion, a Firebase service account key JSON file is needed. Place it in the project root directory (e.g., `eastern-perigee-461323-s4-firebase-adminsdk-fbsvc-9b5f1a76d2.json`). **Important:** This key should be kept secure and ideally not committed to public repositories.
+4.  **Service Account Key:** For data ingestion, a Firebase service account key JSON file is needed. Place it in the project root directory (e.g., `qwiklabs-gcp-00-6d5f50f68707-firebase-adminsdk-fbsvc-9b5f1a76d2.json`). **Important:** This key should be kept secure and ideally not committed to public repositories.
 
 ### Folder Structure Overview
 
@@ -32,7 +32,7 @@ This document outlines the steps to set up, deploy, and manage the data for the 
 
 1.  **Ensure Firebase Project is Set:**
     *   Log in to Firebase: `firebase login`
-    *   Set your active Firebase project: `firebase use --add` (select your project, e.g., `eastern-perigee-461323-s4`).
+    *   Set your active Firebase project: `firebase use --add` (select your project, e.g., `qwiklabs-gcp-00-6d5f50f68707`).
     *   Alternatively, specify the project in deploy commands using `--project <your-project-id>`.
 
 2.  **Set up Python Virtual Environment for Cloud Functions:**
@@ -75,7 +75,7 @@ The `src/scripts/ingest_data.py` script populates Firestore from an Excel file (
 1.  **Prepare Data Files:**
     *   Ensure `data/turning-data.xlsx` is present and correctly formatted.
     *   Ensure your Firebase service account key JSON is at the project root.
-    *   The script uses relative paths: `../../eastern-perigee-461323-s4-firebase-adminsdk-fbsvc-9b5f1a76d2.json`, `../../data/turning-data.xlsx`, `../../data/turning-data.csv` (fallback for items).
+    *   The script uses relative paths: `../../qwiklabs-gcp-00-6d5f50f68707-firebase-adminsdk-fbsvc-9b5f1a76d2.json`, `../../data/turning-data.xlsx`, `../../data/turning-data.csv` (fallback for items).
 
 2.  **Run the Ingestion Script:**
     *   Navigate to the scripts directory: `cd src/scripts`
@@ -95,7 +95,7 @@ The `src/scripts/ingest_data.py` script populates Firestore from an Excel file (
 
 ### Using the Application
 
-1.  **Access the Frontend:** Open the Firebase Hosting URL for your project (e.g., `https://<your-project-id>.web.app`). The specific URL for this project is `https://eastern-perigee-461323-s4.web.app`.
+1.  **Access the Frontend:** Open the Firebase Hosting URL for your project (e.g., `https://<your-project-id>.web.app`). The specific URL for this project is `https://qwiklabs-gcp-00-6d5f50f68707.web.app`.
 2.  **Run Optimization:** Click the "Run Optimization" button. The process may take a few minutes.
 3.  **View Results:**
     *   The frontend will display the JSON response from the optimization function, including costs and the production plan details.

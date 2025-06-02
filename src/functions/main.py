@@ -15,7 +15,7 @@ def get_base_cost(item_doc):
         return item_doc["baseCostPerItem"]
     return random.uniform(1.5, 3.0)
 
-@https_fn.on_request(region="europe-west1", memory=16384, cpu=8)
+@https_fn.on_request(region="europe-west1", memory=8192, cpu=2)
 def optimizeProduction(req: https_fn.Request) -> https_fn.Response:
     cors_headers = {
         'Access-Control-Allow-Origin': '*',

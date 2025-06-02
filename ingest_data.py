@@ -6,7 +6,7 @@ import random
 import math
 
 # Initialize Firebase Admin SDK
-SERVICE_ACCOUNT_KEY_PATH = '../../qwiklabs-gcp-00-6d5f50f68707-firebase-adminsdk-fbsvc-1fe7825b05.json'
+SERVICE_ACCOUNT_KEY_PATH = '../../qwiklabs-gcp-00-6d5f50f68707-firebase-adminsdk-fbsvc-9b5f1a76d2.json'
 EXCEL_FILE_PATH = '../../data/turning-data.xlsx'
 CSV_ITEMS_FALLBACK_PATH = '../../data/turning-data.csv'
 
