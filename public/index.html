@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FB Planners App - Optimization</title>
+    <style>
+        body { font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 20px; background: #ECEFF1; color: rgba(0,0,0,0.87); }
+        #container { background: white; max-width: 1000px; margin: 20px auto; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
+        h1 { color: #ffa100; font-size: 24px; margin-bottom: 20px; }
+        h2 { color: #0277bd; font-size: 20px; margin-top: 30px; margin-bottom: 10px; }
+        button {
+            background-color: #039be5;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background-color: #0277bd;
+        }
+        button:disabled {
+            background-color: #BDBDBD;
+            cursor: not-allowed;
+        }
+        #summaryResults, #planDetailsContainer {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #DDD;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            word-wrap: break-word;
+        }
+        #summaryResults p { margin: 5px 0; }
+        #summaryResults strong { color: #333; }
+        .loader {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #039be5; /* Blue */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+            display: none; /* Hidden by default */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #039be5;
+            color: white;
+        }
+        tr:nth-child(even){background-color: #f2f2f2;}
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Production Optimization</h1>
+        <p>Click the button below to trigger the optimization process. This may take a few minutes.</p>
+        <button id="optimizeButton">Run Optimization</button>
+        <div class="loader" id="loader"></div>
+
+        <h2>Optimization Summary:</h2>
+        <div id="summaryResults">
+            <p>Summary will appear here...</p>
+        </div>
+
+        <h2>Detailed Production Plan:</h2>
+        <div id="planDetailsContainer">
+            <p>Plan details will appear here...</p>
+        </div>
+    </div>
+
+    <script>
+        const optimizeButton = document.getElementById('optimizeButton');
+        const summaryResultsDiv = document.getElementById('summaryResults');
+        const planDetailsContainerDiv = document.getElementById('planDetailsContainer');
+        const loader = document.getElementById('loader');
+        const functionUrl = 'https://optimizeproduction-cyasbcnzaq-ew.a.run.app';
+
+        optimizeButton.addEventListener('click', async () => {
+            summaryResultsDiv.innerHTML = '<p>Processing... Please wait.</p>';
+            planDetailsContainerDiv.innerHTML = ''; // Clear previous plan table
+            optimizeButton.disabled = true;
+            loader.style.display = 'block';
+
+            try {
+                const response = await fetch(functionUrl, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+
+                loader.style.display = 'none';
+                optimizeButton.disabled = false;
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+
+                const data = await response.json();
+                
+                // Populate Summary Results
+                summaryResultsDiv.innerHTML = 
+                    `<p><strong>Status:</strong> ${data.status}</p>` +
+                    `<p><strong>Message:</strong> ${data.message}</p>` +
+                    `<p><strong>Total Optimized Machining Cost (SEK):</strong> ${data.totalOptimizedMachiningCostSEK !== undefined ? data.totalOptimizedMachiningCostSEK.toFixed(2) : 'N/A'}</p>` +
+                    `<p><strong>Total Optimized Stock Cost (EUR):</strong> ${data.totalOptimizedStockCostEUR !== undefined ? data.totalOptimizedStockCostEUR.toFixed(2) : 'N/A'}</p>` +
+                    `<p><strong>Total Original Machining Cost (SEK):</strong> ${data.totalOriginalMachiningCostSEK !== undefined ? data.totalOriginalMachiningCostSEK.toFixed(2) : 'N/A'}</p>` +
+                    `<p><strong>Total Original Stock Cost (EUR):</strong> ${data.totalOriginalStockCostEUR !== undefined ? data.totalOriginalStockCostEUR.toFixed(2) : 'N/A'}</p>` +
+                    `<p><strong>Machining Savings (SEK):</strong> <span style="color: ${data.machiningSavingsSEK > 0 ? 'green' : 'red'};">${data.machiningSavingsSEK !== undefined ? data.machiningSavingsSEK.toFixed(2) : 'N/A'}</span></p>` +
+                    `<p><strong>Stock Savings (EUR):</strong> <span style="color: ${data.stockSavingsEUR > 0 ? 'green' : 'red'};">${data.stockSavingsEUR !== undefined ? data.stockSavingsEUR.toFixed(2) : 'N/A'}</span></p>`;
+
+                // Populate Plan Details Table
+                if (data.plan && data.plan.length > 0) {
+                    let tableHTML = '<table>';
+                    tableHTML += '<thead><tr>' +
+                                 '<th>Month</th>' +
+                                 '<th>Item ID</th>' +
+                                 '<th>Machine ID</th>' +
+                                 '<th>Quantity</th>' +
+                                 '<th>Op. Time Used (min)</th>' +
+                                 '<th>Machining Cost (SEK)</th>' +
+                                 '</tr></thead><tbody>';
+                    
+                    // Sort plan by month (optional, but good for display)
+                    const monthOrder = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                    const sortedPlan = data.plan.sort((a, b) => monthOrder.indexOf(a.month) - monthOrder.indexOf(b.month));
+
+                    sortedPlan.forEach(item => {
+                        tableHTML += '<tr>' +
+                                     `<td>${item.month}</td>` +
+                                     `<td>${item.itemId}</td>` +
+                                     `<td>${item.machineId}</td>` +
+                                     `<td>${item.quantity}</td>` +
+                                     `<td>${item.operationTimeUsedMinutes !== undefined ? item.operationTimeUsedMinutes.toFixed(2) : 'N/A'}</td>` +
+                                     `<td>${item.machiningCostSEK !== undefined ? item.machiningCostSEK.toFixed(2) : 'N/A'}</td>` +
+                                     '</tr>';
+                    });
+                    tableHTML += '</tbody></table>';
+                    planDetailsContainerDiv.innerHTML = tableHTML;
+                } else {
+                    planDetailsContainerDiv.innerHTML = '<p>No detailed plan data available.</p>';
+                }
+
+            } catch (error) {
+                console.error('Error calling optimization function:', error);
+                summaryResultsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+                planDetailsContainerDiv.innerHTML = '';
+                loader.style.display = 'none';
+                optimizeButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
